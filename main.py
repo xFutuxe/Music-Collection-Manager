@@ -1,9 +1,13 @@
 import tkinter, sqlite3, os, time
 import add_album
 
-DB_FILE = "collection.db"
+DB_FOLDER = "data"
+DB_FILE = os.path.join(DB_FOLDER, "collection.db")
 
 def database():
+    # Create the folder if it doesn't exist
+    if not os.path.exists(DB_FOLDER):
+        os.makedirs(DB_FOLDER)
     if not os.path.exists(DB_FILE):
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()

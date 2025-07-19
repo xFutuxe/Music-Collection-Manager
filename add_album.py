@@ -33,7 +33,16 @@ def addAlbumUI():
         entry.pack(side=tkinter.RIGHT, fill="x", expand=True)
         entries[field] = entry
 
+    def validate_fields():
+        for field in fields:
+            if not entries[field].get().strip():
+                messagebox.showerror("Input Error", f"{field} cannot be empty.")
+                return False
+        return True
+
     def save_album():
+        if not validate_fields():
+            return  # Stop if validation fails
         album_data = {field: entries[field].get() for field in fields}
         try:
             conn = sqlite3.connect(main.DB_FILE)
