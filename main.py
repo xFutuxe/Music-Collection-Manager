@@ -1,4 +1,5 @@
 import tkinter, sqlite3, os, time
+import add_album
 
 DB_FILE = "collection.db"
 
@@ -6,7 +7,7 @@ def database():
     if not os.path.exists(DB_FILE):
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, albumName TEXT, artistName TEXT, year INTEGER, genre TEXT, decription TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, albumName TEXT, artistName TEXT, year INTEGER, genre TEXT, decription TEXT, albumCoverPath BLOB)''')
         conn.commit()
         conn.close()
 
@@ -59,7 +60,7 @@ def mainMenu():
         "cursor": "hand2"
     }
 
-    btnAddAlbum = tkinter.Button(root, text="Add Album", command=lambda: print("Add Album clicked"), **button_style)
+    btnAddAlbum = tkinter.Button(root, text="Add Album", command=lambda: add_album.addAlbumUI(), **button_style)
     btnAddAlbum.pack(pady=15)
     btnViewAlbums = tkinter.Button(root, text="View Albums", command=lambda: print("View Albums clicked"), **button_style)
     btnViewAlbums.pack(pady=15)
