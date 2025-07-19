@@ -1,6 +1,7 @@
 import tkinter, sqlite3, os, time
-from tkinter import messagebox
-import main
+from tkinter import messagebox, filedialog
+import db_manager
+import shutil
 
 
 def addAlbumUI():
@@ -33,6 +34,52 @@ def addAlbumUI():
         entry.pack(side=tkinter.RIGHT, fill="x", expand=True)
         entries[field] = entry
 
+    def select_cover():
+        file_path = tkinter.filedialog.askopenfilename(
+            title="Select Album Cover",
+            filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif;*.bmp")]
+        )
+        if file_path:
+            entries["Album Cover"].delete(0, tkinter.END)
+            entries["Album Cover"].insert(0, file_path)
+
+    cover_frame = ttk.Frame(root)
+    cover_frame.pack(fill="x", padx=40, pady=8)
+    cover_btn = ttk.Button(cover_frame, text="Browse...", command=select_cover)
+    cover_btn.pack(side=tkinter.RIGHT, padx=(10, 0))
+
+    def save_album():
+        if not validate_fields():
+            return
+        album_data = {field: entries[field].get() for field in fields}
+        cover_src = album_data["Album Cover"]
+        cover_dest = ""
+        if cover_src and os.path.isfile(cover_src):
+            ext = os.path.splitext(cover_src)[1]
+            safe_name = f"{int(time.time())}_{os.path.basename(cover_src)}"
+            imgs_dir = os.path.join("data", "imgs")
+            os.makedirs(imgs_dir, exist_ok=True)
+            cover_dest = os.path.join(imgs_dir, safe_name)
+            try:
+                shutil.copy2(cover_src, cover_dest)
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to copy album cover: {e}")
+                return
+        else:
+            cover_dest = ""
+        try:
+            conn = sqlite3.connect(db_manager.DB_FILE)
+            cursor = conn.cursor()
+            cursor.execute('''INSERT INTO albums (albumName, artistName, year, genre, decription, albumCover) VALUES (?, ?, ?, ?, ?, ?)''',
+                           (album_data["Album Name"], album_data["Artist Name"], album_data["Year"], album_data["Genre"], album_data["Description"], cover_dest))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            messagebox.showinfo("Success", "Album added successfully!")
+            root.destroy()
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"Failed to add album: {e}")
+
     def validate_fields():
         for field in fields:
             if not entries[field].get().strip():
@@ -45,9 +92,9 @@ def addAlbumUI():
             return  # Stop if validation fails
         album_data = {field: entries[field].get() for field in fields}
         try:
-            conn = sqlite3.connect(main.DB_FILE)
+            conn = sqlite3.connect(db_manager.DB_FILE)
             cursor = conn.cursor()
-            cursor.execute('''INSERT INTO users (albumName, artistName, year, genre, decription) VALUES (?, ?, ?, ?, ?)''',
+            cursor.execute('''INSERT INTO albums (albumName, artistName, year, genre, decription) VALUES (?, ?, ?, ?, ?)''',
                            (album_data["Album Name"], album_data["Artist Name"], album_data["Year"], album_data["Genre"], album_data["Description"]))
             conn.commit()
             cursor.close()
