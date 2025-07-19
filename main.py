@@ -20,6 +20,17 @@ def mainMenu():
     root.title("Music Collection")
     root.geometry("500x600")
     
+    menubar = tkinter.Menu(root)
+    menu = tkinter.Menu(menubar, tearoff=0)
+    menu.add_command(label="Exit", command=root.quit)
+    menubar.add_cascade(label="Menu", menu=menu)
+
+    tools_menu = tkinter.Menu(menubar, tearoff=0)
+    tools_menu.add_command(label="Coming Soon")
+    menubar.add_cascade(label="Tools", menu=tools_menu)
+
+    root.config(menu=menubar)
+
     label = tkinter.Label(root, text="Welcome to your Music Collection", font=("Arial", 16))
     label.pack(pady=20)
     
