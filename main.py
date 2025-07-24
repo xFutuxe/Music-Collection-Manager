@@ -18,12 +18,13 @@ def mainMenu():
 
     root.config(menu=menubar)
 
-    label = tkinter.Label(root, text="Welcome to your Music Collection", font=("Arial", 16))
+    main_menu_frame = tkinter.Frame(root)
+    main_menu_frame.pack(fill="both", expand=True)
+
+    label = tkinter.Label(main_menu_frame, text="Welcome to your Music Collection", font=("Arial", 16))
     label.pack(pady=20)
     
     status_text = db_manager.check_database_integrity()
-
-
     uiStatusBar = tkinter.Label(root, text=status_text, bd=1, relief=tkinter.SUNKEN, anchor=tkinter.E)
     uiStatusBar.pack(side=tkinter.BOTTOM, fill=tkinter.X, ipadx=5, ipady=5)
 
@@ -47,13 +48,13 @@ def mainMenu():
         "cursor": "hand2"
     }
 
-    btnAddAlbum = tkinter.Button(root, text="Add Album", command=lambda: add_album.addAlbumUI(), **button_style)
+    btnAddAlbum = tkinter.Button(main_menu_frame, text="Add Album", command=lambda: add_album.addAlbumUI(root, main_menu_frame), **button_style)
     btnAddAlbum.pack(pady=15)
-    btnViewAlbums = tkinter.Button(root, text="View Albums", command=lambda: view_albums.view_albums(), **button_style)
+    btnViewAlbums = tkinter.Button(main_menu_frame, text="View Albums", command=lambda: view_albums.view_albums(root), **button_style)
     btnViewAlbums.pack(pady=15)
-    btnSearchAlbum = tkinter.Button(root, text="Search Album", command=lambda: print("Search Albums"), **button_style)
+    btnSearchAlbum = tkinter.Button(main_menu_frame, text="Search Album", command=lambda: print("Search Albums"), **button_style)
     btnSearchAlbum.pack(pady=15)
-    btnExit = tkinter.Button(root, text="Exit", command=root.quit, **button_style)
+    btnExit = tkinter.Button(main_menu_frame, text="Exit", command=root.quit, **button_style)
     btnExit.pack(pady=15)
 
 
