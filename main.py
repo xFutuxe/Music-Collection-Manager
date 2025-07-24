@@ -16,6 +16,9 @@ def mainMenu():
     tools_menu.add_command(label="Coming Soon")
     menubar.add_cascade(label="Tools", menu=tools_menu)
 
+    help_menu = tkinter.Menu(menubar, tearoff=0)
+    menubar.add_command(label="About", command=lambda: aboutWindow())
+
     root.config(menu=menubar)
 
     main_menu_frame = tkinter.Frame(root)
@@ -59,6 +62,19 @@ def mainMenu():
 
 
     root.mainloop()
+
+
+def aboutWindow():
+    about_window = tkinter.Toplevel()
+    about_window.title("About")
+    about_window.geometry("300x200")
+    
+    about_text = "Music Collection Manager\nVersion 0.1\nCreated by xFutuxe"
+    label = tkinter.Label(about_window, text=about_text, justify="center", padx=10, pady=10)
+    label.pack(expand=True)
+
+    close_button = tkinter.Button(about_window, text="Close", command=about_window.destroy)
+    close_button.pack(pady=10)
     
 
 def main():
