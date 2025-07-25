@@ -5,7 +5,8 @@ import db_manager
 def mainMenu():
     root = tkinter.Tk()
     root.title("Music Collection")
-    root.geometry("500x600")
+    root.geometry("1200x600")
+    root.minsize(400, 400)
     
     menubar = tkinter.Menu(root)
     menu = tkinter.Menu(menubar, tearoff=0)
@@ -21,10 +22,10 @@ def mainMenu():
 
     root.config(menu=menubar)
 
-    main_menu_frame = tkinter.Frame(root)
+    main_menu_frame = tkinter.Frame(root, bg="#DDDDDD")
     main_menu_frame.pack(fill="both", expand=True)
 
-    label = tkinter.Label(main_menu_frame, text="Welcome to your Music Collection", font=("Arial", 16))
+    label = tkinter.Label(main_menu_frame, text="Welcome to your Music Collection", font=("Arial", 16), bg="#DDDDDD", fg="black")
     label.pack(pady=20)
     
     status_text = db_manager.check_database_integrity()
@@ -41,9 +42,9 @@ def mainMenu():
     # Menu Buttons
     button_style = {
         "font": ("Segoe UI", 14, "bold"),
-        "bg": "#4CAF50",
+        "bg": "#4A90E2",
         "fg": "white",
-        "activebackground": "#388E3C",
+        "activebackground": "#3F3F3F",
         "activeforeground": "white",
         "bd": 0,
         "height": 2,
