@@ -1,9 +1,64 @@
-import os, time, sqlite3, tkinter
+import os, time, sqlite3, tkinter, random
 from tkinter import messagebox, filedialog
 import db_manager
 from PIL import Image, ImageTk
 
+
+def save_album():
+
+    conn = sqlite3.connect(db_manager.DB_FILE)
+    cursor = conn.cursor()
+
+    # Grab values 
+    album_name = album_name_entry.get().strip()
+    artist_name = artist_entry.get().strip()
+    genre = genre_entry.get().strip()
+    year = year_entry.get().strip()
+    pricing = pricing_entry.get().strip()
+    description = description_text.get("1.0", tkinter.END).strip()
+    art_path = art_path_var.get().strip()
+
+    if not album_name or not artist_name or not genre or not year:
+        messagebox.showerror("Error", "Please fill in all required fields.")
+        return
+    
+    # Generate random ID for album
+    album_id = int(time.time() * 1000) 
+
+    # Save album cover to data folder with random name
+    if art_path:
+        if not os.path.exists(db_manager.DB_FOLDER):
+            os.makedirs(db_manager.DB_FOLDER)
+        # Use a random name for the album cover
+
+        art_filename = f"{random.getrandbits(128)}.jpg"
+        try:
+            img = Image.open(art_path_var.get())
+            rgb_img = img.convert("RGB")
+            # Save album art in data/imgs folder
+            imgs_folder = os.path.join(db_manager.DB_FOLDER, "imgs")
+            if not os.path.exists(imgs_folder):
+                os.makedirs(imgs_folder)
+            art_path = os.path.join(imgs_folder, art_filename)
+            rgb_img.save(art_path, "JPEG")
+            art_path = os.path.abspath(art_path)  # Get absolute path for database storage
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not save album cover: {e}")
+            return
+
+    # Insert album into database
+    cursor.execute('''INSERT INTO albums (id, albumName, artistName, year, genre, pricing, description, albumCoverPath) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                   (album_id, album_name, artist_name, year, genre, pricing, description, art_path))
+    conn.commit()
+    conn.close()
+    messagebox.showinfo("Success", "Album saved successfully!")
+
+
+
 def addAlbumUI(root, main_menu_frame):
+
+    global album_name_entry, artist_entry, genre_entry, year_entry, pricing_entry, description_text, art_path_var
+
     # Hide the main menu frame
     main_menu_frame.pack_forget()
 
@@ -79,7 +134,7 @@ def addAlbumUI(root, main_menu_frame):
     year_entry.grid(row=2, column=1, sticky="ew", padx=padx, pady=pady_entry)
 
     pricing_label = tkinter.Label(
-        add_album_frame, text="Pricing (£):", font=("Segoe UI", 11),
+        add_album_frame, text="Pricing (optional)", font=("Segoe UI", 11),
         fg="black", bg="#DDDDDD", anchor="w"
     )
     pricing_label.grid(row=3, column=1, sticky="w", padx=padx, pady=(0, pady_label))
@@ -143,7 +198,7 @@ def addAlbumUI(root, main_menu_frame):
     save_btn = tkinter.Button(
         button_frame, text="Save Album", font=("Segoe UI", 11, "bold"),
         bg="#7289DA", fg="white", activebackground="#99AAB5", activeforeground="white",
-        bd=0, width=13, cursor="hand2"
+        bd=0, width=13, cursor="hand2", command=lambda : save_album()
     )
     save_btn.pack(side="left", padx=8)
 
@@ -160,6 +215,5 @@ def addAlbumUI(root, main_menu_frame):
     add_album_frame.grid_columnconfigure(1, weight=1)
 
     return add_album_frame
-
 
 

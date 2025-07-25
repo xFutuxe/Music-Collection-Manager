@@ -7,7 +7,7 @@ def view_albums(parent):
     def fetch_albums():
         conn = sqlite3.connect(db_manager.DB_FILE)
         cursor = conn.cursor()
-        cursor.execute("SELECT albumName, artistName, year, genre, decription, albumCoverPath FROM albums")
+        cursor.execute("SELECT albumName, artistName, year, genre, description, albumCoverPath FROM albums")
         albums = cursor.fetchall()
         conn.close()
         return albums

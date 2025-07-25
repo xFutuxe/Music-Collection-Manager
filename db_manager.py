@@ -12,7 +12,7 @@ def initialize_database():
     if not os.path.exists(DB_FILE):
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, albumName TEXT, artistName TEXT, year INTEGER, genre TEXT, pricing TEXT, decription TEXT, albumCoverPath BLOB)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS albums (id INTEGER PRIMARY KEY, albumName TEXT, artistName TEXT, year INTEGER, genre TEXT, pricing TEXT, description TEXT, albumCoverPath BLOB)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS tracks (id INTEGER PRIMARY KEY, albumId INTEGER, trackName TEXT, duration TEXT, FOREIGN KEY(albumId) REFERENCES albums(id))''')
         conn.commit()
         conn.close()
